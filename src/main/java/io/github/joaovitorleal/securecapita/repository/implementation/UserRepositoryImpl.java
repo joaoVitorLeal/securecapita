@@ -42,12 +42,10 @@ public class UserRepositoryImpl implements UserRepository<User> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RoleRepository<Role> roleRepository;
-    private final PasswordEncoder encoder;
 
-    public UserRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, RoleRepository<Role> roleRepository, PasswordEncoder encoder) {
+    public UserRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, RoleRepository<Role> roleRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.roleRepository = roleRepository;
-        this.encoder = encoder;
     }
 
     @Transactional
@@ -117,7 +115,7 @@ public class UserRepositoryImpl implements UserRepository<User> {
                 .addValue("firstName", user.getFirstName())
                 .addValue("lastName", user.getLastName())
                 .addValue("email", user.getEmail())
-                .addValue("password", encoder.encode(user.getPassword()));
+                .addValue("password", user.getPassword());
     }
 
     private String getVerificationUrl(String key, String type) {
