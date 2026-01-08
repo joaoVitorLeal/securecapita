@@ -64,18 +64,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(corsConfigurer -> corsConfigurer.configurationSource(null))
-            .sessionManagement(sessionConfigurer -> sessionConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authorizationManagerRequest -> {
-                authorizationManagerRequest.requestMatchers(PUBLIC_URLS).permitAll();
-                authorizationManagerRequest.requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("DELETE:USER");
-                authorizationManagerRequest.requestMatchers(HttpMethod.DELETE, "/customers/**").hasAuthority("DELETE:CUSTOMER");
-                authorizationManagerRequest.anyRequest().authenticated();
-            })
-            .exceptionHandling(exception -> {
-                exception.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint);
-            });
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(this.corsConfigurationSource()))
+                .sessionManagement(sessionConfigurer -> sessionConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception ->
+                        exception.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
+                .authorizeHttpRequests(authorizationManagerRequest -> {
+                    authorizationManagerRequest.requestMatchers(PUBLIC_URLS).permitAll();
+                    authorizationManagerRequest.requestMatchers(HttpMethod.OPTIONS).permitAll();
+                    authorizationManagerRequest.requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("DELETE:USER");
+                    authorizationManagerRequest.requestMatchers(HttpMethod.DELETE, "/customers/**").hasAuthority("DELETE:CUSTOMER");
+                    authorizationManagerRequest.anyRequest().authenticated();
+                })
+                .addFilterBefore(new UsernamePasswordAuthenticationFilter(this.authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
