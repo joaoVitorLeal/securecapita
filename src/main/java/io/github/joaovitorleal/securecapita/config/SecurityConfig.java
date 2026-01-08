@@ -32,6 +32,22 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {"/users/login/**", "/users"};
+    private static final int PASSWORD_STRENGTH = 14;
+    private static final List<String> ALLOWED_ORIGINS = List.of(
+            "http://localhost:4200",
+            "http://localhost:3000",
+            "http://securecapita.org",
+            "http://192.168.0.164"
+    );
+    private static final List<String> ALLOWED_HEADERS = Arrays.asList(
+            "Origin", "Access-Control-Allow-Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization",
+            "Origin", "Accept", "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Header"
+    );
+    private static final List<String> EXPOSED_HEADERS = Arrays.asList(
+            "Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization", "Access-Control-Allow-Origin",
+            "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "File-Name"
+    );
+    private static final List<String> ALLOWED_METHODS = Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
