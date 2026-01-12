@@ -1,7 +1,7 @@
 package io.github.joaovitorleal.securecapita.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.joaovitorleal.securecapita.dto.HttpResponse;
+import io.github.joaovitorleal.securecapita.dto.ApiResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -23,7 +23,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        HttpResponse httpResponse = HttpResponse.builder()
+        ApiResponseDto httpResponse = ApiResponseDto.builder()
                 .timestamp(Instant.now().toString())
                 .reason("You don't have enough permission.")
                 .status(HttpStatus.FORBIDDEN)

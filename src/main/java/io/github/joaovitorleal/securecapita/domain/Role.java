@@ -11,17 +11,11 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(
-        name = "roles",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "name", name = "uq_roles_name")
-        }
-)
+@Table(name = "roles")
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Role implements Serializable {
 
     @Serial

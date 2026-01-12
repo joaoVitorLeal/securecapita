@@ -1,4 +1,4 @@
-package io.github.joaovitorleal.securecapita.utils;
+package io.github.joaovitorleal.securecapita.controller.utils;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

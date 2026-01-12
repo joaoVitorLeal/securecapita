@@ -14,16 +14,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email", name = "uq_users_email")
-        }
-)
+@Table(name = "users")
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class User implements Serializable {
 

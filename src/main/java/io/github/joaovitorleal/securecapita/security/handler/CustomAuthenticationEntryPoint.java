@@ -1,7 +1,7 @@
 package io.github.joaovitorleal.securecapita.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.joaovitorleal.securecapita.dto.HttpResponse;
+import io.github.joaovitorleal.securecapita.dto.ApiResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        HttpResponse httpResponse = HttpResponse.builder()
+        ApiResponseDto httpResponse = ApiResponseDto.builder()
                 .timestamp(Instant.now().toString())
                 .reason("You need to log in to access this resource.")
                 .status(HttpStatus.UNAUTHORIZED)

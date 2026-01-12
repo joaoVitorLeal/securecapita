@@ -1,7 +1,6 @@
-package io.github.joaovitorleal.securecapita.dtomapper;
+package io.github.joaovitorleal.securecapita.mapper;
 
 import io.github.joaovitorleal.securecapita.domain.User;
-import io.github.joaovitorleal.securecapita.dto.UserDto;
 import io.github.joaovitorleal.securecapita.dto.UserRequestDto;
 import io.github.joaovitorleal.securecapita.dto.UserResponseDto;
 import org.springframework.beans.BeanUtils;
@@ -12,15 +11,8 @@ import java.util.Objects;
 @Component
 public class UserMapper {
 
-    public UserDto toUserDto(User user) {
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(user, userDto);
-        return userDto;
-    }
-
     public UserResponseDto toResponseDto(User user) {
         Objects.requireNonNull(user, "The entity User must not be null when convert to DTO.");
-
         return new UserResponseDto(
                 user.getId(),
                 user.getFirstName(),
@@ -38,13 +30,7 @@ public class UserMapper {
         );
     }
 
-    public User toUser(UserDto userDto) {
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        return user;
-    }
-
-    public User toUserEntity(UserRequestDto userDto) {
+    public User toEntity(UserRequestDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
         return user;

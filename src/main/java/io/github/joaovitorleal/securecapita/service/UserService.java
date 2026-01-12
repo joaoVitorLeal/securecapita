@@ -5,10 +5,9 @@ import io.github.joaovitorleal.securecapita.domain.Role;
 import io.github.joaovitorleal.securecapita.domain.TwoFactorVerification;
 import io.github.joaovitorleal.securecapita.domain.User;
 import io.github.joaovitorleal.securecapita.domain.enums.VerificationType;
-import io.github.joaovitorleal.securecapita.dto.UserDto;
 import io.github.joaovitorleal.securecapita.dto.UserRequestDto;
 import io.github.joaovitorleal.securecapita.dto.UserResponseDto;
-import io.github.joaovitorleal.securecapita.dtomapper.UserMapper;
+import io.github.joaovitorleal.securecapita.mapper.UserMapper;
 import io.github.joaovitorleal.securecapita.exception.EmailAlreadyExistsException;
 import io.github.joaovitorleal.securecapita.exception.RoleNotFoundByNameException;
 import io.github.joaovitorleal.securecapita.exception.UserNotFoundByEmailException;
@@ -19,9 +18,6 @@ import io.github.joaovitorleal.securecapita.repository.TwoFactorVerificationJpaR
 import io.github.joaovitorleal.securecapita.repository.UserJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +64,7 @@ public class UserService {
         if(userJpaRepository.existsByEmail(userRequestDto.email())) {
             throw new EmailAlreadyExistsException("Email already exists. Please use a different email and try again.");
         }
-        User user = userMapper.toUserEntity(userRequestDto);
+        User user = userMapper.toEntity(userRequestDto);
         user.setPassword(encoder.encode(user.getPassword()));
 
         Role role = roleJpaRepository.findByName(ROLE_USER.name())

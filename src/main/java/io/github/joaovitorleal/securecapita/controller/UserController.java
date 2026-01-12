@@ -1,13 +1,11 @@
-package io.github.joaovitorleal.securecapita.resource;
+package io.github.joaovitorleal.securecapita.controller;
 
-import io.github.joaovitorleal.securecapita.dto.HttpResponse;
-import io.github.joaovitorleal.securecapita.domain.User;
-import io.github.joaovitorleal.securecapita.dto.UserDto;
+import io.github.joaovitorleal.securecapita.dto.ApiResponseDto;
 import io.github.joaovitorleal.securecapita.dto.UserRequestDto;
 import io.github.joaovitorleal.securecapita.dto.UserResponseDto;
-import io.github.joaovitorleal.securecapita.dto.form.LoginForm;
+import io.github.joaovitorleal.securecapita.dto.form.LoginFormDto;
 import io.github.joaovitorleal.securecapita.service.UserService;
-import io.github.joaovitorleal.securecapita.utils.UriGenerator;
+import io.github.joaovitorleal.securecapita.controller.utils.UriGenerator;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -19,34 +17,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserResource {
+public class UserController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginForm loginForm) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword()));
-        UserResponseDto userResponseDto = userService.getUserByEmail(loginForm.getEmail());
+    public ResponseEntity<ApiResponseDto> login(@RequestBody @Valid LoginFormDto loginForm) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.email(), loginForm.password()));
+        UserResponseDto userResponseDto = userService.getUserByEmail(loginForm.email());
         return userResponseDto.usingMfa()
                 ? this.sendVerificationCode(userResponseDto)
                 : this.sendResponse(userResponseDto);
     }
 
     @PostMapping
-    public ResponseEntity<HttpResponse> createUser(@RequestBody @Valid UserRequestDto userRequestDto) {
+    public ResponseEntity<ApiResponseDto> createUser(@RequestBody @Valid UserRequestDto userRequestDto) {
         UserResponseDto userResponseDto = userService.createUser(userRequestDto);
         return ResponseEntity.created(UriGenerator.generate(userResponseDto.id())).body(
-                HttpResponse.builder()
+                ApiResponseDto.builder()
                         .timestamp(LocalDateTime.now().toString())
                         .data(Map.of("user", userResponseDto))
                         .message("User created")
@@ -56,9 +52,9 @@ public class UserResource {
         );
     }
 
-    private ResponseEntity<HttpResponse> sendResponse(UserResponseDto userResponseDto) {
+    private ResponseEntity<ApiResponseDto> sendResponse(UserResponseDto userResponseDto) {
         return ResponseEntity.ok(
-                HttpResponse.builder()
+                ApiResponseDto.builder()
                         .timestamp(LocalDateTime.now().toString())
                         .data(Map.of("user", userResponseDto))
                         .message("Login successful")
@@ -68,10 +64,10 @@ public class UserResource {
         );
     }
 
-    private ResponseEntity<HttpResponse> sendVerificationCode(UserResponseDto userResponseDto) {
+    private ResponseEntity<ApiResponseDto> sendVerificationCode(UserResponseDto userResponseDto) {
         userService.sendVerificationCode(userResponseDto);
         return ResponseEntity.ok(
-                HttpResponse.builder()
+                ApiResponseDto.builder()
                         .timestamp(LocalDateTime.now().toString())
                         .data(Map.of("user", userResponseDto))
                         .message("Verification code sent.")

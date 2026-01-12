@@ -1,7 +1,6 @@
-package io.github.joaovitorleal.securecapita.service.implementation;
+package io.github.joaovitorleal.securecapita.service;
 
 import io.github.joaovitorleal.securecapita.exception.EmailDeliveryFailureException;
-import io.github.joaovitorleal.securecapita.service.NotificationService;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +11,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("emailService")
-public class EmailServiceImpl implements NotificationService {
+public class EmailService implements NotificationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
     private static final String EMAIL_SUBJECT = "SecureCapita";
     private static final String ENCODING = "UTF-8";
 
@@ -23,7 +22,7 @@ public class EmailServiceImpl implements NotificationService {
     @Value("spring.mail.username")
     private String fromEmail;
 
-    public EmailServiceImpl(JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 

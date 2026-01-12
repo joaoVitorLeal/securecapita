@@ -1,13 +1,12 @@
-package io.github.joaovitorleal.securecapita.service.implementation;
+package io.github.joaovitorleal.securecapita.service;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-import io.github.joaovitorleal.securecapita.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 @Service("smsService")
-public class SmsServiceImpl implements NotificationService {
+public class SmsService implements NotificationService {
     public static final String FROM_NUMBER = "71988960906";
     public static final String TWILIO_ACCOUNT_SID = "";
     public static final String TWILIO_AUTH_TOKEN = "";
