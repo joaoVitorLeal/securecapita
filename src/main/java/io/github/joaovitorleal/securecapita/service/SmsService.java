@@ -6,6 +6,7 @@ import com.twilio.type.PhoneNumber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Deprecated(since = "1.1.0")
 @Service("smsService")
 public class SmsService implements NotificationService {
 
