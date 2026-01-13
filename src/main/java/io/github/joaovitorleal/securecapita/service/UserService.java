@@ -109,6 +109,9 @@ public class UserService {
                         .build()
         );
         log.info("2FA Code generated for user {}: {}", existingUser.getEmail(), verificationCode);
+
+        emailService.sendMessage(existingUser.getEmail(), verificationCode);
+        log.info("2FA Code sent to email: {}", existingUser.getEmail());
     }
 
     private String getVerificationUrl(String key, String type) {
