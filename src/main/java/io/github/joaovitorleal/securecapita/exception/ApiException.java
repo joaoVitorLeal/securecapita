@@ -1,6 +1,6 @@
 package io.github.joaovitorleal.securecapita.exception;
 
-public class ApiException extends RuntimeException {
+public abstract class ApiException extends RuntimeException {
 
     public ApiException(String message) {
         super(message);
