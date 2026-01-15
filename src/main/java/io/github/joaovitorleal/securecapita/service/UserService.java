@@ -87,11 +87,17 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDto getUserByEmail(String email) {
+    public UserResponseDto getUserDtoByEmail(String email) {
         return userMapper.toResponseDto(
                 userJpaRepository.findByEmail(email)
                         .orElseThrow(() -> new UserNotFoundByEmailException("No User found by email: " + email))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserByEmail(String email) {
+        return userJpaRepository.findByEmail(email)
+                        .orElseThrow(() -> new UserNotFoundByEmailException("No User found by email: " + email));
     }
 
     @Transactional
