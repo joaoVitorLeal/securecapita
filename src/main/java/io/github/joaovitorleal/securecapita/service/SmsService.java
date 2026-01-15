@@ -31,4 +31,19 @@ public class SmsService implements NotificationService {
                 message
         ).create();
     }
+
+    /**
+     * @param userFirstName
+     * @param to Phone number recipient
+     * @param mfaCode Two-Factor Authentication code
+     */
+    @Override
+    public void sendMfaCode(String userFirstName, String to, String mfaCode) {
+        Twilio.init(twilioAccountSid, twilioAuthToken);
+        Message smsMessage = Message.creator(
+                new PhoneNumber("+55" + to),
+                new PhoneNumber("+55" + fromNumber),
+                mfaCode
+        ).create();
+    }
 }
