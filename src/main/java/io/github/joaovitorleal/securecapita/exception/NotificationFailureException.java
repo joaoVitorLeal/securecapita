@@ -1,6 +1,6 @@
 package io.github.joaovitorleal.securecapita.exception;
 
-public abstract class NotificationFailureException extends RuntimeException {
+public abstract class NotificationFailureException extends ApiException {
 
     public NotificationFailureException(String message) {
         super(message);
