@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TwoFactorVerification implements Serializable {
+public class MfaVerification implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class TwoFactorVerification implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true, nullable = false)
     private User user;
 
-    @Column(length = 10, unique = true, nullable = false)
+    @Column(length = 8, unique = true, nullable = false)
     private String code;
 
     @Column(name = "expiration_date", nullable = false)
