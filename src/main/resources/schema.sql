@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS user_events;
 DROP TABLE IF EXISTS account_verifications;
 DROP TABLE IF EXISTS reset_password_verifications;
-DROP TABLE IF EXISTS two_factor_verifications;
+DROP TABLE IF EXISTS mfa_verifications;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -124,16 +124,16 @@ CREATE TABLE IF NOT EXISTS reset_password_verifications
     CONSTRAINT uq_reset_password_verifications_url UNIQUE (url)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS two_factor_verifications
+CREATE TABLE IF NOT EXISTS mfa_verifications
 (
     id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id         BIGINT UNSIGNED NOT NULL,
     code            VARCHAR(10)     NOT NULL,
     expiration_date DATETIME        NOT NULL,
 
-    CONSTRAINT fk_two_factor_verifications_users FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT uq_two_factor_verifications_user_id UNIQUE (user_id),
-    CONSTRAINT uq_two_factor_verifications_code UNIQUE (code)
+    CONSTRAINT fk_mfa_verifications_users FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT uq_mfa_verifications_user_id UNIQUE (user_id),
+    CONSTRAINT uq_mfa_verifications_code UNIQUE (code)
 ) ENGINE = InnoDB;
 
 INSERT INTO roles (name, permission)
