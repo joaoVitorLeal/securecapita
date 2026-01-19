@@ -1,5 +1,6 @@
 package io.github.joaovitorleal.securecapita.config;
 
+import io.github.joaovitorleal.securecapita.security.filter.CustomAuthorizationFilter;
 import io.github.joaovitorleal.securecapita.security.handler.CustomAccessDeniedHandler;
 import io.github.joaovitorleal.securecapita.security.handler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {"/users/login/**", "/users"};
+    private static final String[] PUBLIC_URLS = {"/users/login/**", "/users", "/users/verify/code/**"};
     private static final int PASSWORD_STRENGTH = 14;
     private static final List<String> ALLOWED_ORIGINS = List.of(
             "http://localhost:4200",
@@ -53,7 +54,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final UserDetailsService userDetailsService;
-//    private final CustomAuthorizationFilter customAuthorizationFilter;
+    private final CustomAuthorizationFilter customAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -71,7 +72,7 @@ public class SecurityConfig {
                     authorizationManagerRequest.requestMatchers(HttpMethod.DELETE, "/customers/**").hasAuthority("DELETE:CUSTOMER");
                     authorizationManagerRequest.anyRequest().authenticated();
                 })
-                .addFilterBefore(new UsernamePasswordAuthenticationFilter(this.authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
