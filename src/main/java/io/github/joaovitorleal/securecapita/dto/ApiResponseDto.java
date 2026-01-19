@@ -9,6 +9,7 @@ import java.util.Map;
 
 @Data
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponseDto {
     protected String timestamp;
     protected int statusCode;
