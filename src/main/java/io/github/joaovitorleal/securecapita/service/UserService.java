@@ -67,17 +67,14 @@ public class UserService {
         Role role = roleJpaRepository.findByName(ROLE_USER.name())
                 .orElseThrow(() -> {
                     log.warn("No role found with name: {}", user.getRole().getName());
-                    return new RoleNotFoundByNameException("No role found with name: " + user.getRole().getName());
+                    return new RoleNotFoundByNameException(user.getRole().getName());
                 });
         user.setRole(role);
 
         User createdUser = userJpaRepository.save(user);
 
         String verificationUrl = this.getVerificationUrl(UUID.randomUUID().toString(), VerificationType.ACCOUNT.getType());
-        AccountVerification accountVerification = AccountVerification.builder()
-                .user(user)
-                .url(verificationUrl)
-                .build();
+        AccountVerification accountVerification = new AccountVerification(user, verificationUrl);
         accountVerificationJpaRepository.save(accountVerification);
         //emailService.sendMessage(user.getEmail(), verificationUrl);
         return userMapper.toResponseDto(createdUser);
@@ -87,14 +84,14 @@ public class UserService {
     public UserResponseDto getUserDtoByEmail(String email) {
         return userMapper.toResponseDto(
                 userJpaRepository.findByEmail(email)
-                        .orElseThrow(() -> new UserNotFoundByEmailException("No User found by email: " + email))
+                        .orElseThrow(() -> new UserNotFoundByEmailException(email))
         );
     }
 
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userJpaRepository.findByEmail(email)
-                        .orElseThrow(() -> new UserNotFoundByEmailException("No User found by email: " + email));
+                        .orElseThrow(() -> new UserNotFoundByEmailException(email));
     }
 
     @Transactional
@@ -103,14 +100,8 @@ public class UserService {
         String code = RandomStringUtils.secure().nextAlphanumeric(8).toUpperCase();
         mfaVerificationJpaRepository.deleteByUserId(userResponseDto.id());
         User existingUser = userJpaRepository.findById(userResponseDto.id())
-                .orElseThrow(() -> new UserNotFoundByIdException("User not found with id: " + userResponseDto.id()));
-        mfaVerificationJpaRepository.save(
-                MfaVerification.builder()
-                        .user(existingUser)
-                        .code(code)
-                        .expirationDate(expirationDate)
-                        .build()
-        );
+                .orElseThrow(() -> new UserNotFoundByIdException(userResponseDto.id()));
+        mfaVerificationJpaRepository.save(new MfaVerification(existingUser, code, expirationDate));
         log.info("MFA Code generated for user {}: {}", existingUser.getEmail(), code);
 
         emailService.sendMfaCode(existingUser.getFirstName(), existingUser.getEmail(), code);
@@ -119,19 +110,24 @@ public class UserService {
 
     @Transactional
     public UserResponseDto verifyMfaCode(String email, String code) {
-        User user = userJpaRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundByEmailException("User not found with email: " + email));
-        MfaVerification mfaVerification = mfaVerificationJpaRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new MfaVerificationNotFoundByUserIdException("MFA code not found."));
-        if (!mfaVerification.getCode().equals(code)) {
+        try {
+            User user = userJpaRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundByEmailException(email));
+            MfaVerification mfaVerification = mfaVerificationJpaRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new MfaVerificationNotFoundByUserIdException("MFA code not found."));
+            if (!mfaVerification.getCode().equals(code)) {
+                throw new MfaCodeInvalidException("Invalid MFA code.");
+            }
+            if (mfaVerification.getExpirationDate().isBefore(LocalDateTime.now())) {
+                mfaVerificationJpaRepository.delete(mfaVerification);
+                throw new MfaCodeExpiredException("MFA code expired.");
+            }
+            mfaVerificationJpaRepository.delete(mfaVerification);
+            return userMapper.toResponseDto(user);
+        } catch (UserNotFoundByEmailException | MfaVerificationNotFoundByUserIdException e) {
+            log.warn("Error while verifying MFA code {}", e.getMessage(), e);
             throw new MfaCodeInvalidException("Invalid MFA code.");
         }
-        if (mfaVerification.getExpirationDate().isBefore(LocalDateTime.now())) {
-            mfaVerificationJpaRepository.delete(mfaVerification);
-            throw new MfaCodeExpiredException("MFA code expired.");
-        }
-        mfaVerificationJpaRepository.delete(mfaVerification);
-        return userMapper.toResponseDto(user);
     }
 
     private String getVerificationUrl(String key, String type) {
