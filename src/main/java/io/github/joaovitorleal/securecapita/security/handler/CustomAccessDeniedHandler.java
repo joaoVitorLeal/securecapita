@@ -35,6 +35,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         );
 
         problemDetail.setTitle("Access Denied");
+        problemDetail.setType(URI.create("urn:securecapita:error:auth"));
         problemDetail.setInstance(URI.create(request.getRequestURI()));
         problemDetail.setProperty("timestamp", Instant.now());
 
