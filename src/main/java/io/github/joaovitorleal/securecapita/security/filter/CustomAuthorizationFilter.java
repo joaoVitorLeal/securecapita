@@ -7,11 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +27,14 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private static final List<String> PUBLIC_ROUTES = List.of("/users/login", "/users/verify/code");
 
     private final TokenProvider tokenProvider;
+    private final HandlerExceptionResolver resolver;
 
-    public CustomAuthorizationFilter(TokenProvider tokenProvider) {
+    public CustomAuthorizationFilter(
+            TokenProvider tokenProvider,
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver
+    ) {
         this.tokenProvider = tokenProvider;
+        this.resolver = exceptionResolver;
     }
 
     /**
@@ -44,29 +51,20 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = this.getToken(request);
-            if (token == null || token.isBlank()) {
-                filterChain.doFilter(request, response);
-                return;
+            if (token != null && !token.isBlank()) {
+                String email = tokenProvider.getSubject(token, request);
+                if (email != null && !email.isBlank()) {
+                    List<GrantedAuthority> authorities = tokenProvider.getAuthorities(token);
+                    Authentication authentication = tokenProvider.getAuthentication(email, authorities, request);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
-
-            String email = tokenProvider.getSubject(token, request);
-            if (email == null || email.isBlank()) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            if (!tokenProvider.isTokenValid(email, token)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            List<GrantedAuthority> authorities = tokenProvider.getAuthorities(token);
-            Authentication authentication = tokenProvider.getAuthentication(email, authorities, request);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            log.error("Error during authentication: {}", e.getMessage());
+            log.error("Error in authorization filter: {}", e.getMessage());
             SecurityContextHolder.clearContext();
+            resolver.resolveException(request, response, null, e);
         }
-
-        filterChain.doFilter(request, response);
     }
 
     @Override
