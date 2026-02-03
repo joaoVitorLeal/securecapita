@@ -46,4 +46,9 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return this.user.isEnabled();
     }
+
+    @SuppressWarnings("Dont use lombok")
+    public User getUser() {
+        return this.user;
+    }
 }
