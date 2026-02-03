@@ -46,4 +46,14 @@ public class SmsService implements NotificationService {
                 mfaCode
         ).create();
     }
+
+    /**
+     * @param userFirstName
+     * @param to
+     * @param verificationUrl
+     */
+    @Override
+    public void sendResetPasswordUrl(String userFirstName, String to, String verificationUrl) {
+        // ...
+    }
 }
