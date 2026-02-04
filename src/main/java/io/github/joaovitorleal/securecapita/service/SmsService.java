@@ -20,8 +20,10 @@ public class SmsService implements NotificationService {
     private String twilioAuthToken;
 
     /**
-     * @param to Phone number recipient
-     * @param message body of the message
+     * Enviar mensagem de notificações genéricas.
+     *
+     * @param to Número de telefone de destino.
+     * @param message corpo da mensagem.
      */
     public void sendMessage(String to, String message) {
         Twilio.init(twilioAccountSid, twilioAuthToken);
@@ -33,9 +35,11 @@ public class SmsService implements NotificationService {
     }
 
     /**
-     * @param userFirstName
-     * @param to Phone number recipient
-     * @param mfaCode Two-Factor Authentication code
+     * Enviar de código de autenticação Multifator.
+     *
+     * @param userFirstName Primeiro nome do usuário.
+     * @param to Número de telefone de destino.
+     * @param mfaCode Código de autenticação multifator (Two-Factor Authentication)
      */
     @Override
     public void sendMfaCode(String userFirstName, String to, String mfaCode) {
@@ -45,6 +49,7 @@ public class SmsService implements NotificationService {
                 new PhoneNumber("+55" + fromNumber),
                 mfaCode
         ).create();
+        // TODO
     }
 
     /**
@@ -55,5 +60,14 @@ public class SmsService implements NotificationService {
     @Override
     public void sendResetPasswordUrl(String userFirstName, String to, String verificationUrl) {
         // ...
+    }
+
+    /**
+     * @param userFirstName
+     * @param to
+     */
+    @Override
+    public void sendResetPasswordConfirmationMessage(String userFirstName, String to) {
+        //...
     }
 }
