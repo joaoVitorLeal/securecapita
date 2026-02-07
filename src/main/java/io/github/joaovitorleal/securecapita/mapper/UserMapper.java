@@ -1,7 +1,7 @@
 package io.github.joaovitorleal.securecapita.mapper;
 
 import io.github.joaovitorleal.securecapita.domain.User;
-import io.github.joaovitorleal.securecapita.dto.UserRequestDto;
+import io.github.joaovitorleal.securecapita.dto.UserCreateRequestDto;
 import io.github.joaovitorleal.securecapita.dto.UserResponseDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -31,15 +31,16 @@ public class UserMapper {
                 user.isEnabled(),
                 user.isNonLocked(),
                 user.isUsingMfa(),
+                user.getMfaType(),
                 user.getImageUrl(),
                 user.getCreatedAt(),
                 roleMapper.toDto(user.getRole())
         );
     }
 
-    public User toEntity(UserRequestDto userDto) {
+    public User toEntity(UserCreateRequestDto userCreateDto) {
         User user = new User();
-        BeanUtils.copyProperties(userDto, user);
+        BeanUtils.copyProperties(userCreateDto, user);
         return user;
     }
 }
