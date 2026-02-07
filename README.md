@@ -34,7 +34,7 @@ Este é o Back-end da aplicação. O Front-end (Angular) pode ser encontrado aqu
 
 [//]: # (    * Relatórios e dashboard estatístico.)
 
-## ⚙️ Como Rodar Localmente
+## Como Rodar Localmente
 
 ### Pré-requisitos
 * Java 17 ou superior
