@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record UserRequestDto(
+public record UserCreateRequestDto(
         @NotBlank(message = "First name is required.")
         @Size(min = 2, max = 40, message = "First name must be between 2 and 40 characters.")
         String firstName,
