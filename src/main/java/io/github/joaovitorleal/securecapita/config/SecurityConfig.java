@@ -33,7 +33,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {"/users/login/**", "/users", "/users/verify/code/**"};
+    private static final String[] PUBLIC_URLS = {
+            "/users/login/**", "/users", "/users/verify/code/**", "/users/password-resets/**", "/users/verify/password/**",
+            "/users/verify/account/**", "/users/refresh/token/**"
+    };
     private static final int PASSWORD_STRENGTH = 14;
     private static final List<String> ALLOWED_ORIGINS = List.of(
             "http://localhost:4200",
