@@ -24,7 +24,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final List<String> PUBLIC_ROUTES = List.of("/users/login", "/users/verify/code");
+    private static final List<String> PUBLIC_ROUTES = List.of("/users/login", "/users/verify/code", "/users/refresh/token");
 
     private final TokenProvider tokenProvider;
     private final HandlerExceptionResolver resolver;
