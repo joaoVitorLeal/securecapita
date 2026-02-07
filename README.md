@@ -60,19 +60,19 @@ mvn spring-boot:run
 
 Para rodar a aplicação, você precisará configurar as seguintes chaves no seu `application.yml` ou nas variáveis do sistema:
 
-| Variável | Descrição | Exemplo                                    |
-| :--- | :--- |:-------------------------------------------|
-| `MYSQL_DB_URL` | URL de conexão JDBC do banco | `jdbc:mysql://localhost:3306/securecapita` |
-| `MYSQL_DB_USERNAME` | Usuário do banco de dados | `root`                                     |
-| `MYSQL_DB_PASSWORD` | Senha do banco de dados | `secret`                                   |
-| `JWT_SECRET` | Chave secreta para assinatura dos tokens | `coloque_uma_chave_forte_e_secreta_aqui`   |
-| `TWILIO_SID` | SID da conta Twilio (MFA SMS) | `AC...`                                    |
-| `TWILIO_TOKEN` | Token de autenticação Twilio | `...`                                      |
-| `TWILIO_NUMBER` | Número de envio Twilio | `+15005550006`                             |
-| `EMAIL_HOST` | Host SMTP do provedor de e-mail | `smtp.gmail.com`                           |
-| `EMAIL_USERNAME` | Seu endereço de e-mail | `email@exemplo.com`                        |
-| `EMAIL_PASSWORD` | Senha de aplicativo do e-mail | `senha-app-google`                         |
-
+| Variável | Descrição | Exemplo |
+| :--- | :--- | :--- |
+| `SECURECAPITA_DB_URL` | URL de conexão JDBC do banco | `jdbc:mysql://localhost:3306/securecapita` |
+| `SECURECAPITA_DB_USERNAME` | Usuário do banco de dados | `root` |
+| `SECURECAPITA_DB_PASSWORD` | Senha do banco de dados | `sua_senha_aqui` |
+| `JWT_SECRET` | Chave secreta para assinatura dos tokens | `uma_chave_muito_forte_e_secreta` |
+| `TWILIO_SID` | SID da conta Twilio (MFA via SMS) | `AC...` |
+| `TWILIO_TOKEN` | Token de autenticação Twilio | `...` |
+| `TWILIO_NUMBER` | Número de envio cadastrado no Twilio | `+15005550006` |
+| `SPRING_MAIL_HOST` | Host SMTP do provedor de e-mail | `smtp.gmail.com` |
+| `SPRING_MAIL_PORT` | Porta do servidor SMTP | `587` |
+| `SPRING_MAIL_USERNAME` | Seu endereço de e-mail | `seu.email@gmail.com` |
+| `SPRING_MAIL_PASSWORD` | Senha de aplicativo (App Password) | `abcd-efgh-ijkl-mnop` |
 ---
 
 ## Contribuições
